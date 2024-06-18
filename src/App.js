@@ -1,15 +1,12 @@
-// import logo from './logo.svg';
-// import './App.css';
+import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
-// import Label from "./component/Elements/Input/Label.jsx";
-// import Input from "./component/Elements/Input/Input.jsx";
 import FormLogin from "./component/Fragments/FormLogin.jsx";
 
 function App() {
   return (
     <div className="App">
-      <div className="container mt-5">
-        <div className="row justify-content-center">
+      <div className="container">
+        <div className="row justify-content-center w-100">
           <FormLogin title="Login" />
         </div>
       </div>
