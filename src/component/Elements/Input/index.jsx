@@ -9,6 +9,7 @@ const InputElement = (props) => {
         type={props.type}
         identity={props.identity}
         placeholder={props.placeholder}
+        onChange={props.onChange}
       ></Input>
     </div>
   );

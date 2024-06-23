@@ -5,6 +5,7 @@ const Input = (props) => {
       className="form-control"
       id={props.identity}
       placeholder={props.placeholder}
+      onChange={(e) => props.onChange(e.target.value)}
     />
   );
 };
