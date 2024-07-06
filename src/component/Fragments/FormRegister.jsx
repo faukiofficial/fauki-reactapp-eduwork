@@ -1,109 +1,166 @@
-import InputElement from "../Elements/Input";
-import Button from "../Elements/Button";
-import { Link } from "react-router-dom";
 import React from "react";
+import { Link } from "react-router-dom";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import Button from "../Elements/Button";
+
+const validationSchema = Yup.object().shape({
+  nama: Yup.string()
+    .min(5, "Nama tidak boleh kurang dari 5 karakter")
+    .required("Nama wajib diisi"),
+  username: Yup.string()
+    .min(5, "Username tidak boleh kurang dari 5 karakter")
+    .required("Username wajib diisi"),
+  email: Yup.string().email("Email tidak valid").required("Email wajib diisi"),
+  password: Yup.string()
+    .min(8, "Password tidak boleh kurang dari 8 karakter")
+    .required("Password wajib diisi"),
+  confirmPassword: Yup.string()
+    .oneOf(
+      [Yup.ref("password"), null],
+      "Konfirmasi password harus sama dengan password"
+    )
+    .required("Konfirmasi password wajib diisi"),
+});
 
 class FormRegister extends React.Component {
-  state = {
-    nama: "",
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+  handleLogin = (values) => {
+    localStorage.setItem("nama", values.nama);
+    localStorage.setItem("username", values.username);
+    localStorage.setItem("email", values.email);
+    localStorage.setItem("password", values.password);
+    localStorage.setItem("confirmPassword", values.confirmPassword);
+
+    alert("Sukses, lihat data di localStorage");
   };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    const {nama, username, email, password, confirmPassword} = this.state;
-    const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
-
-    if(nama.length < 5){
-      alert("Nama tidak boleh kurang dari 5 karakter")
-    } else if(username.length < 5){
-      alert("Username tidak boleh kurang dari 5 karakter")
-    } else if(!re.test(String(email).toLowerCase())) {
-      alert("Email tidak valid")
-    } else if (password.length < 8){
-      alert("Password tidak boleh kurang dari 8 karakter")
-    } else if(confirmPassword !== password){
-      alert("Password tidak sama")
-    } else {
-      alert("Semua data benar")
-    }
-  };
   render() {
     return (
       <div className="col-md-4">
-        <div className="card" style={{minWidth: "400px"}}>
+        <div className="card" style={{ minWidth: "400px" }}>
           <div className="card-body">
             <h3 className="card-title text-center mb-4">{this.props.title}</h3>
-            <form onSubmit={this.handleSubmit}>
-              <InputElement
-                identity="name"
-                label="Nama Lengkap"
-                type="text"
-                placeholder="Nama minimal 5 karakter"
-                onChange={(value) =>
-                  this.setState({ nama: value }
-                  )
-                }
-              ></InputElement>
-              <InputElement
-                identity="username"
-                label="Username"
-                type="text"
-                placeholder="Username minimal 5 karakter"
-                onChange={(value) =>
-                  this.setState({ username: value }
-                  )
-                }
-              ></InputElement>
-              <InputElement
-                identity="inputEmail"
-                label="Email"
-                type="email"
-                placeholder="example@gmail.com"
-                onChange={(value) =>
-                  this.setState({ email: value }
-                  )
-                }
-              ></InputElement>
-              <InputElement
-                identity="password"
-                label="Password"
-                type="password"
-                placeholder="********"
-                onChange={(value) =>
-                  this.setState({ password: value }
-                  )
-                }
-              ></InputElement>
-              <InputElement
-                identity="confirmPassword"
-                label="Confirm Password"
-                type="password"
-                placeholder="********"
-                onChange={(value) =>
-                  this.setState({ confirmPassword: value }
-                  )
-                }
-              ></InputElement>
-              <Button
-                type="submit"
-                classname="btn btn-primary"
-                text="Register"
-              ></Button>
-            </form>
+            <Formik
+              initialValues={{
+                nama: "",
+                username: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+              }}
+              validationSchema={validationSchema}
+              onSubmit={(values) => {
+                this.handleLogin(values);
+              }}
+            >
+              {({ isSubmitting, handleChange }) => (
+                <Form>
+                  <div className="mb-3">
+                    <label htmlFor="nama" className="mb-1">
+                      Nama
+                    </label>
+                    <Field
+                      name="nama"
+                      type="text"
+                      id="nama"
+                      placeholder="Nama minimal 5 karakter"
+                      className="form-control"
+                      onChange={handleChange}
+                    />
+                    <ErrorMessage
+                      name="nama"
+                      component="div"
+                      className="text-danger"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="nama" className="mb-1">
+                      Username
+                    </label>
+                    <Field
+                      name="username"
+                      type="text"
+                      id="username"
+                      placeholder="Username minimal 5 karakter"
+                      className="form-control"
+                      onChange={handleChange}
+                    />
+                    <ErrorMessage
+                      name="username"
+                      component="div"
+                      className="text-danger"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="inputEmail" className="mb-1">
+                      Email
+                    </label>
+                    <Field
+                      name="email"
+                      type="email"
+                      id="inputEmail"
+                      placeholder="example@gmail.com"
+                      className="form-control"
+                      onChange={handleChange}
+                    />
+                    <ErrorMessage
+                      name="email"
+                      component="div"
+                      className="text-danger"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="password">Password</label>
+                    <Field
+                      name="password"
+                      type="password"
+                      id="password"
+                      placeholder="********"
+                      className="form-control"
+                      onChange={handleChange}
+                    />
+                    <ErrorMessage
+                      name="password"
+                      component="div"
+                      className="text-danger"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    <Field
+                      name="confirmPassword"
+                      type="password"
+                      id="confirmPassword"
+                      placeholder="********"
+                      className="form-control"
+                      onChange={handleChange}
+                    />
+                    <ErrorMessage
+                      name="confirmPassword"
+                      component="div"
+                      className="text-danger"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    classname="btn btn-primary"
+                    text="Register"
+                    disabled={isSubmitting}
+                  ></Button>
+                </Form>
+              )}
+            </Formik>
             <p className="text-center mt-3">
-              Sudah punya akun? <Link className="fw-bold text-decoration-none" to="/login">Login</Link>
+              Sudah punya akun?{" "}
+              <Link className="fw-bold text-decoration-none" to="/login">
+                Login
+              </Link>
             </p>
           </div>
         </div>
       </div>
-    )
+    );
   }
-  
-};
+}
 
 export default FormRegister;
